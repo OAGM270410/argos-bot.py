@@ -15,7 +15,14 @@ logging.basicConfig(
 log = logging.getLogger("bot")
 
 # ── Configuración ─────────────────────────────────────────────────────────────
-TOKEN = os.environ["DISCORD_TOKEN"]
+# Intenta leer el token desde variable de entorno, luego desde token.txt
+TOKEN = os.environ.get("DISCORD_TOKEN")
+if not TOKEN:
+    token_file = Path(__file__).parent / "token.txt"
+    if token_file.exists():
+        TOKEN = token_file.read_text().strip()
+if not TOKEN:
+    raise RuntimeError("No se encontró DISCORD_TOKEN. Crea un archivo token.txt con el token del bot.")
 
 INTENTS = discord.Intents.default()
 INTENTS.message_content = True
